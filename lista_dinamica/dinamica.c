@@ -1,151 +1,140 @@
+#include "dinamica.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "dinamica.h"
 
 void inicializarLista(ListaAlunos* lista) {
-    lista->inicio=NULL;
+    lista->inicio = NULL;
 }
 
-int tamanho(ListaAlunos lista) {
+void reiniciarLista(ListaAlunos* lista) {
+    Elemento* atual = lista->inicio;
+    while (atual != NULL) {
+        Elemento* proximo = atual->prox;
+        free(atual);
+        atual = proximo;
+    }
+    lista->inicio = NULL;
+}
+
+int quantidadeElementos(ListaAlunos lista) {
     int tam = 0;
-    ELEMENTO* i = lista->inicio;
-    while (i != NULL) {
+    Elemento* atual = lista.inicio;
+    while (atual != NULL) {
         tam++;
-        i = i->prox;
+        atual = atual->prox;
     }
     return tam;
 }
 
-int listaEstaCheia(ListaAlunos lista) {
-    return (lista.disponivel == -1);
-}
-
-int listaEstaVazia(ListaAlunos lista) {
-    return (lista.inicio == -1);
-}
-
-
-ELEMENTO* buscarMatricula(ListaAlunos* lista, int matri) {
-    ELEMENTO* i = lista->inicio;
-    while (i != NULL && i->aluno.matricula < matri) {
-        i = i->prox;
-        if (i == NULL && i->aluno.matricula == matri) {
-            return i;
-        } else {
-            return NULL;
-        }
-    }
+int listaVazia(ListaAlunos lista) {
+    return (lista.inicio == NULL);
 }
 
 void exibirLista(ListaAlunos lista) {
-    ELEMNTO* atual = lista->inicio;
+    Elemento* atual = lista.inicio;
     while (atual != NULL) {
-        printf("Matricula: %d, Nome: %s, Idade: %d\n",
-               i.aluno.matricula,
-               i.aluno.nome,
-               i.aluno.idade);
-        atual = i->prox;
+        printf("Matricula: %d\n", atual->aluno.matricula);
+        printf("Nome: %s\n", atual->aluno.nome);
+        printf("Idade: %d\n", atual->aluno.idade);
+        printf("\n");
+        atual = atual->prox;
     }
 }
 
-
-int obterNo(ListaAlunos* lista) {
-    int disp = lista->disponivel;
-    if (lista->disponivel != -1)
-        lista->disponivel = lista->turma[disp].prox;
-    return disp;
+Elemento* criarElemento(Aluno aluno) {
+    Elemento* novoElemento = (Elemento*)malloc(sizeof(Elemento));
+    if (novoElemento != NULL) {
+        novoElemento->aluno = aluno;
+        novoElemento->prox = NULL;
+    }
+    return novoElemento;
 }
 
-int inserirAluno(ListaAlunos* lista, Aluno novo_aluno) {
-    if (lista->disponivel == -1) {
-        return 0;  // Falha ao inserir, lista cheia
+void inserirInicio(ListaAlunos* lista, Aluno aluno) {
+    Elemento* novoElemento = criarElemento(aluno);
+    if (novoElemento != NULL) {
+        novoElemento->prox = lista->inicio;
+        lista->inicio = novoElemento;
     }
+}
 
-    int i = lista->inicio;
-    int pos_inserir = -1;
-    int pos_anterior = -1;
-
-    while (i != -1 && novo_aluno.matricula > lista->turma[i].aluno.matricula) {
-        pos_anterior = i;
-        i = lista->turma[i].prox;
+void inserirFinal(ListaAlunos* lista, Aluno aluno) {
+    Elemento* novoElemento = criarElemento(aluno);
+    // Erro ao alocar memoria
+    if (novoElemento == NULL) {
+        return;
     }
-
-    if (i != -1 && novo_aluno.matricula == lista->turma[i].aluno.matricula) {
-        return 0;  // Falha ao inserir, aluno com matrícula já existente
-    }
-
-    int nova_posicao = obterNo(lista);
-    lista->turma[nova_posicao].aluno = novo_aluno;
-
-    if (pos_anterior == -1) {
-        lista->turma[nova_posicao].prox = lista->inicio;
-        lista->inicio = nova_posicao;
+    if (lista->inicio == NULL) {
+        // Caso a lista esteja vazia, o novo elemento se torna o início da lista
+        lista->inicio = novoElemento;
     } else {
-        lista->turma[nova_posicao].prox = lista->turma[pos_anterior].prox;
-        lista->turma[pos_anterior].prox = nova_posicao;
+        // Caso contrário, percorre a lista até o último elemento
+        Elemento* atual = lista->inicio;
+        while (atual->prox != NULL) {
+            atual = atual->prox;
+        }
+        // Insere o novo elemento no final da lista
+        atual->prox = novoElemento;
     }
-
-    return 1;  // Sucesso ao inserir
 }
 
 
-void liberarLista(ListaAlunos* lista) {
-    lista->inicio = -1;
-    lista->disponivel = 0;
+void inserirOrdenado(ListaAlunos* lista, Aluno aluno) {
+    // Criar um novo elemento
+    Elemento* novoElemento = criarElemento(aluno);
+    // Erro ao alocar memoria
+    if (novoElemento == NULL) {
+        return;
+    }
+    // Caso a lista esteja vazia ou o aluno deve ser inserido no início
+    if (lista->inicio == NULL || aluno.matricula < lista->inicio->aluno.matricula) {
+        novoElemento->prox = lista->inicio;
+        lista->inicio = novoElemento;
+    } else {
+        // Procurar a posição correta para inserção mantendo a ordem
+        Elemento* atual = lista->inicio;
+        while (atual->prox != NULL && aluno.matricula > atual->prox->aluno.matricula) {
+            atual = atual->prox;
+        }
+        // Inserir o novo elemento após o elemento atual
+        novoElemento->prox = atual->prox;
+        atual->prox = novoElemento;
+    }
 }
 
 void excluirElemento(ListaAlunos* lista, int matricula) {
-    int posicao = -1;     // Posição do elemento a ser excluído
-    int atual = lista->inicio;     // Posição atual na lista
-    int anterior = -1;     // Posição anterior na lista
+    // Verificar se a lista está vazia
+    if (lista->inicio == NULL) {
+        printf("Lista vazia. Nenhum elemento para excluir.\n");
+        return;
+    }
 
-    // Procurar o elemento na lista
-    while (atual != -1 && lista->turma[atual].aluno.matricula != matricula) {
+    Elemento* anterior = NULL;
+    Elemento* atual = lista->inicio;
+
+    // Localizar o elemento a ser excluído na lista
+    while (atual != NULL && atual->aluno.matricula != matricula) {
         anterior = atual;
-        atual = lista->turma[atual].prox;
+        atual = atual->prox;
     }
 
-    // Se o elemento não for encontrado, retornar erro
-    if (atual == -1) {
-        return 0;
+    // Verificar se o elemento foi encontrado
+    if (atual == NULL) {
+        return;
     }
 
-    // Excluir o elemento da lista
-    if (anterior == -1) {
-        lista->inicio = lista->turma[atual].prox;
+    // Remover o elemento da lista
+    if (anterior == NULL) {
+        // Caso o elemento seja o primeiro da lista
+        lista->inicio = atual->prox;
     } else {
-        lista->turma[anterior].prox = lista->turma[atual].prox;
+        // Caso o elemento esteja no meio ou no final da lista
+        anterior->prox = atual->prox;
     }
 
-    // Atualizar os ponteiros para a posição excluída
-    lista->turma[atual].prox = lista->disponivel;
-    lista->disponivel = atual;
+    // Liberar a memória do elemento removido
+    free(atual);
 }
 
 
-void alterarMatricula(ListaAlunos* lista, int matricula, int novaMatricula) {
-    int atual = lista->inicio;
-    int posicaoAnterior = -1;
-
-    while (atual != -1 && lista->turma[atual].aluno.matricula != matricula) {
-        posicaoAnterior = atual;
-        atual = lista->turma[atual].prox;
-    }
-
-    if (atual != -1) {
-        // Salvar as informações do aluno
-        Aluno aluno = lista->turma[atual].aluno;
-
-        // Excluir o registro antigo
-        if (posicaoAnterior == -1) {
-            lista->inicio = lista->turma[atual].prox;
-        } else {
-            lista->turma[posicaoAnterior].prox = lista->turma[atual].prox;
-        }
-
-        // Inserir um novo registro com as novas informações
-        aluno.matricula = novaMatricula;
-        inserirAluno(lista, aluno);
-    }
-}

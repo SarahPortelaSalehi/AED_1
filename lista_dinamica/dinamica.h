@@ -7,7 +7,7 @@ typedef struct {
     int idade;
 } Aluno;
 
-typedef struct aux{
+typedef struct aux {
     Aluno aluno;
     struct aux* prox;
 } Elemento;
@@ -17,16 +17,12 @@ typedef struct {
 } ListaAlunos;
 
 void inicializarLista(ListaAlunos* lista);
-int tamanho(ListaAlunos lista);
-int listaEstaCheia(ListaAlunos lista);
-int listaEstaVazia(ListaAlunos lista);
-int buscarMatricula(ListaAlunos* lista, int matri);
+void reiniciarLista(ListaAlunos* lista);
+int quantidadeElementos(ListaAlunos lista);
+int listaVazia(ListaAlunos lista);
 void exibirLista(ListaAlunos lista);
-int obterNo(ListaAlunos* lista);
-int inserirAluno(ListaAlunos* lista, Aluno novo_aluno);
-void liberarLista(ListaAlunos* lista);
+void inserirInicio(ListaAlunos* lista, Aluno aluno);
+void inserirOrdenado(ListaAlunos* lista, Aluno aluno);
 void excluirElemento(ListaAlunos* lista, int matricula);
-void alterarMatricula(ListaAlunos* lista, int matricula, int novaMatricula);
-
 
 #endif
