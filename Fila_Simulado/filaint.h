@@ -25,5 +25,6 @@ void imprimir(Fila* fila);
 void inverter(Fila* fila);
 void concatenar(Fila* fila1, Fila* fila2);
 void imprimirElementoDoMeio(Fila* fila);
-
+int contarDuplicados(Fila* fila);
+int maiorValor(Fila* fila);
 #endif  // FILAINT_H

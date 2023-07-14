@@ -169,3 +169,56 @@ void imprimirElementoDoMeio(Fila* fila) {
 
     liberarFila(filaAuxiliar);
 }
+
+// Função para contar valores duplicados e imprimir todos os valores duplicados
+int contarDuplicados(Fila* fila) {
+    if (estaVazia(fila)) {
+        printf("A fila esta vazia.\n");
+        return 0; // não há duplicatas em uma fila vazia
+    }
+
+    int contador = 0;
+    Elemento* atual = fila->inicio;
+
+    while (atual != NULL) {
+        int valorAtual = atual->codigo;
+        int duplicatas = 0;
+        Elemento* iterador = atual->prox;
+
+        while (iterador != NULL) {
+            if (iterador->codigo == valorAtual) {
+                duplicatas++;
+            }
+            iterador = iterador->prox;
+        }
+
+        if (duplicatas > 0) {
+            printf("Valor duplicado encontrado: %d\n", valorAtual);
+            contador++;
+        }
+
+        atual = atual->prox;
+    }
+
+    return contador;
+}
+// Função para retornar o maior valor da fila
+int maiorValor(Fila* fila) {
+    if (estaVazia(fila)) {
+        printf("A fila esta vazia.\n");
+        return -1; // ou qualquer outro valor que indique um erro
+    }
+
+    int maior = primeiro(fila);
+    Elemento* atual = fila->inicio->prox;
+
+    while (atual != NULL) {
+        if (atual->codigo > maior) {
+            maior = atual->codigo;
+        }
+        atual = atual->prox;
+    }
+
+    return maior;
+}
+

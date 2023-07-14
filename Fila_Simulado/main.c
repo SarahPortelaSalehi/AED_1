@@ -5,16 +5,23 @@
 int main() {
     Fila* fila = criarFila();
 
-    enfileirar(fila, 1);
-    enfileirar(fila, 2);
-    enfileirar(fila, 3);
-    enfileirar(fila, 4);
     enfileirar(fila, 5);
+    enfileirar(fila, 8);
+    enfileirar(fila, 3);
+    enfileirar(fila, 10);
+    enfileirar(fila, 2);
+    enfileirar(fila, 5);
+    enfileirar(fila, 3);
+    enfileirar(fila, 2);
 
     printf("Elemento no inicio da fila: %d\n", primeiro(fila));
     printf("Tamanho da fila: %d\n", tamanho(fila));
     printf("Fila esta vazia? %s\n", estaVazia(fila) ? "Sim" : "Nao");
     imprimir(fila);
+    printf("Maior valor da fila: %d\n", maiorValor(fila));
+
+    int quantidadeDuplicados = contarDuplicados(fila);
+    printf("Quantidade de valores duplicados: %d\n", quantidadeDuplicados);
 
     desenfileirar(fila);
 
